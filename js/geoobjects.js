@@ -2,10 +2,10 @@ ymaps.ready(init);
 
 function init() {
     var myMap = new ymaps.Map('map', {
-            center: [55.30954, 37.721587],
-            zoom: 8
+            center: [53.902512, 27.561481],
+            zoom: 11
         }, {
-            searchControlProvider: 'yandex#search'
+            // searchControlProvider: 'yandex#search'
         });
     
     // Функция, которая по состоянию чекбоксов в меню
