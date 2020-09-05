@@ -3,86 +3,77 @@ ymaps.ready(init);
 function init() {
     var myMap = new ymaps.Map('map', {
             center: [53.902512, 27.561481],
-            zoom: 11
+            zoom: 10,
+            controls: []
         }, {
-            // searchControlProvider: 'yandex#search'
+            searchControlProvider: 'yandex#search'
+        }),
+        objectManager = new ymaps.ObjectManager({
+            // Чтобы метки начали кластеризоваться, выставляем опцию.
+            clusterize: true,
+            // ObjectManager принимает те же опции, что и кластеризатор.
+            gridSize: 64,
+            // Макет метки кластера pieChart.
+            clusterIconLayout: "default#pieChart"
         });
+    myMap.geoObjects.add(objectManager);
 
-    // Функция, которая по состоянию чекбоксов в меню
-    // показывает или скрывает геообъекты из выборки.
-    function checkState () {
-        var shownObjects,
-            byShape = new ymaps.GeoQueryResult();
+    // Создадим 5 пунктов выпадающего списка.
+    var listBoxItems = ['Дом', 'Двор', 'Микрорайон', 'Район', 'Населенный пункт']
+            .map(function (title) {
+                return new ymaps.control.ListBoxItem({
+                    data: {
+                        content: title
+                    },
+                    state: {
+                        selected: true
+                    }
+                })
+            }),
+        reducer = function (filters, filter) {
+            filters[filter.data.get('content')] = filter.isSelected();
+            return filters;
+        },
+        // Теперь создадим список, содержащий 5 пунктов.
+        listBoxControl = new ymaps.control.ListBox({
+            data: {
+                content: 'Фильтр',
+                title: 'Фильтр'
+            },
+            items: listBoxItems,
+            state: {
+                // Признак, развернут ли список.
+                expanded: true,
+                filters: listBoxItems.reduce(reducer, {})
+            }
+        });
+    myMap.controls.add(listBoxControl);
 
+    // Добавим отслеживание изменения признака, выбран ли пункт списка.
+    listBoxControl.events.add(['select', 'deselect'], function (e) {
+        var listBoxItem = e.get('target');
+        var filters = ymaps.util.extend({}, listBoxControl.state.get('filters'));
+        filters[listBoxItem.data.get('content')] = listBoxItem.isSelected();
+        listBoxControl.state.set('filters', filters);
+    });
 
-        // Отберем объекты по форме.
-        if ($('#house').prop('checked')) {
-            byShape = myObjects.search('options.class = "house"');
-        }
-        if ($('#yard').prop('checked')) {
-            byShape = myObjects.search('options.class = "yard"').add(byShape);
-        }
-        if ($('#microdistrict').prop('checked')) {
-            byShape = myObjects.search('options.class = "microdistrict"').add(byShape);
-        }
-        if ($('#district').prop('checked')) {
-            byShape = myObjects.search('options.class = "district"').add(byShape);
-        }
-        if ($('#city').prop('checked')) {
-            byShape = myObjects.search('options.class = "city"').add(byShape);
-        }
+    var filterMonitor = new ymaps.Monitor(listBoxControl.state);
+    filterMonitor.add('filters', function (filters) {
+        // Применим фильтр.
+        objectManager.setFilter(getFilterFunction(filters));
+    });
 
-        // Мы отобрали объекты по цвету и по форме. Покажем на карте объекты,
-        // которые совмещают нужные признаки.
-        shownObjects = byShape.addToMap(myMap);
-        // Объекты, которые не попали в выборку, нужно убрать с карты.
-        myObjects.remove(shownObjects).removeFromMap(myMap);
+    function getFilterFunction(categories) {
+        return function (obj) {
+            var content = obj.properties.balloonContent;
+            return categories[content]
+        }
     }
 
-    $('#house').click(checkState);
-    $('#yard').click(checkState);
-    $('#microdistrict').click(checkState);
-    $('#district').click(checkState);
-    $('#city').click(checkState);
+    $.ajax({
+        url: "js/data.json"
+    }).done(function (data) {
+        objectManager.add(data);
+    });
 
-    // Создадим объекты из их JSON-описания и добавим их на карту.
-    window.myObjects = ymaps.geoQuery({
-        type: "FeatureCollection",
-        features: [
-            {
-                type: 'Feature',
-                geometry: {
-                    type: 'Point',
-                    coordinates: [53.902512, 27.561481],
-
-                },
-                properties: {
-                    balloonContentHeader: 'Минск',
-                    balloonContent: '<a href="https://t.me/minsk_new">Telegram</a>'
-
-                },
-                options: {
-                    preset: 'islands#redCircleDotIcon',
-                    class: 'city'
-                }
-            },
-            {
-                type: 'Feature',
-                geometry: {
-                    type: 'Point',
-                    coordinates: [53.962353, 27.614791],
-
-                },
-                properties: {
-                    balloonContentHeader: 'Мирошниченко дома: 47, 49, 51, 53',
-                    balloonContent: '<a href="https://t.me/joinchat/T5Kn8xlkK4h4wouFwtO_ew">Telegram</a>'
-
-                },
-                options: {
-                    preset: 'islands#blueCircleDotIcon',
-                    class: 'yard'
-                }
-            },
-        ]
-    }).addToMap(myMap);
 }
