@@ -1,19 +1,4 @@
 /*----------------------------------------------------
-@File: Default Styles
-@Author: Md. Shahadat Hussain
-@URL: https://themeforest.net/user/droitthemes
-
-This file contains the styling for the actual template, this
-is the file you need to edit to change the look of the
-template.
----------------------------------------------------- */
-/*=====================================================================
-@Template Name: 
-@Author: Md. Shahadat Hussain
-@Developed By: Rony
-@Developer URL: https://themeforest.net/user/droitthemes
-
-@Default Styles
 
 Table of Content:
 01/ variables
@@ -37,6 +22,7 @@ Table of Content:
 19/ shop
 20/ blog
 21/ footer
+22/ map
 
 =====================================================================*/
 /*====================================================*/
@@ -23171,10 +23157,13 @@ a .h_head:hover {
     left: 100%;
   }
 }
-
+/* map */
 #map {
     width: 100%;
     height: 600px;
+}
+#map-list .service_item{
+  height: auto;
 }
 /*====================================================*/
 
