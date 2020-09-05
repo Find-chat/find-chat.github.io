@@ -66,7 +66,23 @@ function init() {
                     class: 'city'
                 }
             },
+            {
+                type: 'Feature',
+                geometry: {
+                    type: 'Point',
+                    coordinates: [53.962353, 27.614791],
 
+                },
+                properties: {
+                    balloonContentHeader: 'Мирошниченко дома: 47, 49, 51, 53',
+                    balloonContent: '<a href="https://t.me/joinchat/T5Kn8xlkK4h4wouFwtO_ew">Telegram</a>'
+
+                },
+                options: {
+                    preset: 'islands#redCircleDotIcon',
+                    class: 'yard'
+                }
+            },
         ]
     }).addToMap(myMap);
 }
