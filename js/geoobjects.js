@@ -7,36 +7,44 @@ function init() {
         }, {
             // searchControlProvider: 'yandex#search'
         });
-    
+
     // Функция, которая по состоянию чекбоксов в меню
     // показывает или скрывает геообъекты из выборки.
     function checkState () {
         var shownObjects,
             byShape = new ymaps.GeoQueryResult();
-        
-       
+
+
         // Отберем объекты по форме.
-        if ($('#point').prop('checked')) {
-            byShape = myObjects.search('geometry.type = "Point"');
+        if ($('#house').prop('checked')) {
+            byShape = myObjects.search('options.class = "house"');
         }
-        if ($('#polygon').prop('checked')) {
-            byShape = myObjects.search('geometry.type = "Polygon"').add(byShape);
+        if ($('#yard').prop('checked')) {
+            byShape = myObjects.search('options.class = "yard"').add(byShape);
         }
-        if ($('#circle').prop('checked')) {
-            byShape = myObjects.search('geometry.type = "Circle"').add(byShape);
+        if ($('#microdistrict').prop('checked')) {
+            byShape = myObjects.search('options.class = "microdistrict"').add(byShape);
         }
-        
+        if ($('#district').prop('checked')) {
+            byShape = myObjects.search('options.class = "district"').add(byShape);
+        }
+        if ($('#city').prop('checked')) {
+            byShape = myObjects.search('options.class = "city"').add(byShape);
+        }
+
         // Мы отобрали объекты по цвету и по форме. Покажем на карте объекты,
         // которые совмещают нужные признаки.
         shownObjects = byShape.addToMap(myMap);
         // Объекты, которые не попали в выборку, нужно убрать с карты.
         myObjects.remove(shownObjects).removeFromMap(myMap);
     }
-    
-    $('#point').click(checkState);
-    $('#polygon').click(checkState);
-    $('#circle').click(checkState);
-    
+
+    $('#house').click(checkState);
+    $('#yard').click(checkState);
+    $('#microdistrict').click(checkState);
+    $('#district').click(checkState);
+    $('#city').click(checkState);
+
     // Создадим объекты из их JSON-описания и добавим их на карту.
     window.myObjects = ymaps.geoQuery({
         type: "FeatureCollection",
@@ -45,65 +53,20 @@ function init() {
                 type: 'Feature',
                 geometry: {
                     type: 'Point',
-                    coordinates: [55.34954, 37.721587]
+                    coordinates: [53.902512, 27.561481],
+
+                },
+                properties: {
+                    balloonContentHeader: 'Минск',
+                    balloonContent: '<a href="https://t.me/minsk_new">Telegram</a>'
+
                 },
                 options: {
-                    preset: 'islands#yellowIcon'
+                    preset: 'islands#redCircleDotIcon',
+                    class: 'city'
                 }
             },
-            {
-                type: 'Feature',
-                geometry: {
-                    type: 'Circle',
-                    coordinates: [55.24954, 37.5],
-                    radius: 20000
-                },
-                options: {
-                    fillColor: "#ffcc00"
-                }
-            },
-            {
-                type: 'Feature',
-                geometry: {
-                    type: 'Polygon',
-                    coordinates: [[[55.33954, 37.7], [55.43954, 37.7], [55.33954, 38.7], [55.33954, 37.7]]]
-                },
-                options: {
-                    fillColor: "#ffcc00"
-                }
-            },
-            {
-                type: 'Feature',
-                geometry: {
-                    type: 'Point',
-                    coordinates: [55.24954, 37.4]
-                },
-                options: {
-                    preset: 'islands#greenIcon'
-                }
-            },
-            {
-                type: 'Feature',
-                geometry: {
-                    type: 'Circle',
-                    coordinates: [55.14954, 37.61587],
-                    radius: 10000
-                },
-                options: {
-                    fillColor: '#00ff00'
-                }
-            },
-            {
-                type: 'Feature',
-                geometry: {
-                    type: 'Point',
-                    coordinates: [55.14954, 37.61587],
-                    radius: 10000
-                },
-                options: {
-                    preset: 'islands#redIcon'
-                }
-            }
+
         ]
     }).addToMap(myMap);
 }

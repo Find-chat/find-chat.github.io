@@ -1,0 +1,7 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {"type": "Feature", "id": 0, "geometry": {"type": "Point", "coordinates": [53.8847604, 27.452943]}, "properties": {"balloonContent": "Минск", "clusterCaption": "Аптека", "hintContent": "Аптека", "iconCaption": "Аптека"}, "options": {"preset": "islands#blueCircleDotIconWithCaption"}},
+    {"type": "Feature", "id": 0, "geometry": {"type": "Point", "coordinates": [53.8847604, 27.452943]}, "properties": {"balloonContent": "Двор", "clusterCaption": "Двор", "hintContent": "Двор", "iconCaption": "Аптека"}, "options": {"preset": "islands#blueCircleDotIconWithCaption"}}
+  ]
+}
