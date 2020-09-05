@@ -79,7 +79,7 @@ function init() {
 
                 },
                 options: {
-                    preset: 'islands#redCircleDotIcon',
+                    preset: 'islands#blueCircleDotIcon',
                     class: 'yard'
                 }
             },
